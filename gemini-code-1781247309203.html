@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Versant Section B: Repeat</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .versant-window {
+            background-color: #ffffff;
+            width: 900px;
+            height: 550px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid #d1d1d1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* --- Header Styles --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-circle {
+            background-color: #464646;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .title {
+            color: #1a3668;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .header-right-text {
+            color: #333;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* --- Intro Screen Styles --- */
+        #intro-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .intro-text {
+            padding: 15px 40px;
+            font-size: 14px;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0 40px;
+        }
+
+        .example-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 30px 40px;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .example-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .example-label {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #1a3668;
+        }
+
+        .box-dark {
+            background-color: #464646;
+            color: #fff;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-style: italic;
+            position: relative;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .box-blue {
+            background-color: #1a3668;
+            color: #fff;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-style: italic;
+            position: relative;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .icon-bottom-right {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+        }
+
+        /* --- Quiz Content Styles --- */
+        #quiz-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .instructions {
+            padding: 0 40px 10px 40px;
+            color: #1a3668;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .question-container {
+            flex: 1;
+            margin: 0 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-blue-box {
+            background-color: #1a3668;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .speech-icon {
+            width: 120px;
+            height: 120px;
+            fill: white;
+            transition: transform 0.2s;
+        }
+
+        .pulsing {
+            animation: pulse 1.5s infinite;
+            fill: #4b90e2; /* Turns light blue when recording */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(0.95); }
+        }
+
+        .status-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            height: 24px; /* fixed height to prevent layout shift */
+        }
+
+        /* --- Footer Styles --- */
+        .footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 20px 40px;
+            gap: 20px;
+        }
+
+        .next-btn {
+            color: #333;
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .next-btn:disabled {
+            color: #aaa;
+            cursor: not-allowed;
+        }
+
+        .next-btn:not(:disabled):hover {
+            color: #1a3668;
+            font-weight: bold;
+        }
+
+        /* --- End Screen Styles --- */
+        #end-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            background-color: #f8f9fa;
+        }
+
+        .feedback-container {
+            padding: 20px 40px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .results-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .results-list li {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border-left: 5px solid #1a3668;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .correct-text { color: #2ecc71; font-weight: bold; }
+        .incorrect-text { color: #e74c3c; font-weight: bold; }
+        
+        .restart-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #1a3668;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 20px;
+            display: block;
+            width: 200px;
+            text-align: center;
+        }
+
+        /* SVG Icons */
+        .svg-icon { width: 35px; height: 35px; fill: white; }
+    </style>
+</head>
+<body>
+
+    <div class="versant-window">
+        
+        <div id="intro-screen">
+            <div class="header">
+                <div class="header-left">
+                    <div class="icon-circle">B</div>
+                    <h1 class="title">Repeat</h1>
+                </div>
+                <div class="header-right-text">Instructions</div>
+            </div>
+
+            <div class="intro-text">
+                Please repeat each sentence that you hear.
+            </div>
+
+            <div class="example-container">
+                <div class="example-box">
+                    <div class="example-label">You hear:</div>
+                    <div class="box-dark">
+                        "Leave town on the next train."
+                        <div class="icon-bottom-right">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M12 3a9 9 0 0 0-9 9v7c0 1.1.9 2 2 2h3v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-3v8h3c1.1 0 2-.9 2-2v-7a9 9 0 0 0-9-9z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="example-box">
+                    <div class="example-label">You say:</div>
+                    <div class="box-blue">
+                        "Leave town on the next train."
+                        <div class="icon-bottom-right">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <button class="next-btn" onclick="requestMicAndStart()">
+                    <span style="font-size: 24px;">➔</span> Next
+                </button>
+            </div>
+        </div>
+
+        <div id="quiz-screen">
+            <div class="header">
+                <div class="header-left">
+                    <div class="icon-circle">B</div>
+                    <h1 class="title">Repeat</h1>
+                </div>
+                <div class="header-right-text" id="question-counter">1 / 14</div>
+            </div>
+
+            <div class="instructions">Repeat what you heard.</div>
+
+            <div class="question-container">
+                <div class="main-blue-box">
+                    <svg class="speech-icon" id="speech-icon" viewBox="0 0 24 24">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                    </svg>
+                    <div class="status-text" id="status-text">Playing audio...</div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <button class="next-btn" id="quiz-next-btn" onclick="nextQuestion()" disabled>
+                    <span style="font-size: 24px;">➔</span> Next
+                </button>
+            </div>
+        </div>
+
+        <div id="end-screen">
+            <div class="header">
+                <div class="header-left">
+                    <div class="icon-circle">✔</div>
+                    <h1 class="title">Practice Complete</h1>
+                </div>
+                <div class="header-right-text">Feedback</div>
+            </div>
+            
+            <div class="feedback-container">
+                <p style="margin-top: 0; color: #555;">Review your responses below. Text highlighted in green indicates a strong match, while red indicates differences from the original audio.</p>
+                <ul class="results-list" id="results-list">
+                    </ul>
+                <button class="restart-btn" onclick="location.reload()">Restart Practice</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const exercises = [
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/01_Chapter%201.mp3", transcript: "She is such a great person" },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/02_Chapter%202.mp3", transcript: "I wish you did not tell me that" },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/03_Chapter%203.mp3", transcript: "I have always wanted to visit Europe" },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/04_Chapter%204.mp3", transcript: "Her teacher is so old" },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/05_Chapter%205.mp3", transcript: "My sister is sleeping right now" },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/06_Chapter%206.mp3", transcript: "Can you come tomorrow?" },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/07_Chapter%207.mp3", transcript: "Please, close the window." },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/08_Chapter%208.mp3", transcript: "I have never been so tired before." },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/09_Chapter%209.mp3", transcript: "Are you coming tomorrow?" },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/10_Chapter%2010.mp3", transcript: "If I had known, I would have called" },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/11_Chapter%2011.mp3", transcript: "My mom is a little happy" },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/12_Chapter%2012.mp3", transcript: "Where is your sister from?" },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/13_Chapter%2013.mp3", transcript: "Do you work as an accountant?" },
+            { audio: "https://github.com/jeffersonkuteacher/section-B-versant/raw/refs/heads/main/14_Chapter%2014.mp3", transcript: "The team worked hard ." }
+        ];
+
+        let currentIndex = 0;
+        let userResponses = [];
+        let audioPlayer = new Audio();
+        
+        // Speech Recognition Setup
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let currentRecognizedText = "";
+        let isRecording = false;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        currentRecognizedText += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error:", event.error);
+                if(event.error === 'no-speech') {
+                    currentRecognizedText = "(No speech detected)";
+                }
+            };
+
+            recognition.onend = () => {
+                if(isRecording) stopRecording();
+            };
+        }
+
+        // DOM Elements
+        const introScreen = document.getElementById('intro-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const endScreen = document.getElementById('end-screen');
+        const questionCounter = document.getElementById('question-counter');
+        const statusText = document.getElementById('status-text');
+        const speechIcon = document.getElementById('speech-icon');
+        const nextBtn = document.getElementById('quiz-next-btn');
+
+        async function requestMicAndStart() {
+            try {
+                // Request microphone access once
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                introScreen.style.display = 'none';
+                quizScreen.style.display = 'flex';
+                loadQuestion();
+            } catch (err) {
+                alert("Microphone access is required to practice this section. Please allow microphone permissions and try again.");
+            }
+        }
+
+        function loadQuestion() {
+            currentRecognizedText = "";
+            nextBtn.disabled = true;
+            speechIcon.classList.remove('pulsing');
+            questionCounter.innerText = `${currentIndex + 1} / ${exercises.length}`;
+            statusText.innerText = "Playing audio...";
+
+            // Play Audio
+            audioPlayer.src = exercises[currentIndex].audio;
+            audioPlayer.play().catch(e => {
+                console.error("Error playing audio", e);
+                statusText.innerText = "Error playing audio. Skipping to recording...";
+                setTimeout(startRecording, 1500);
+            });
+
+            audioPlayer.onended = () => {
+                startRecording();
+            };
+        }
+
+        function startRecording() {
+            isRecording = true;
+            statusText.innerText = "Listening... Speak now.";
+            speechIcon.classList.add('pulsing');
+            
+            if (recognition) {
+                try {
+                    recognition.start();
+                } catch(e) {
+                    console.log("Recognition already started");
+                }
+            } else {
+                currentRecognizedText = "(Speech recognition not supported in this browser)";
+                setTimeout(stopRecording, 4000); // Fake delay for unsupported browsers
+            }
+
+            // Auto-stop recording after 6 seconds for each phrase to match Versant flow
+            setTimeout(() => {
+                if (isRecording) stopRecording();
+            }, 6000);
+        }
+
+        function stopRecording() {
+            if(!isRecording) return;
+            isRecording = false;
+            speechIcon.classList.remove('pulsing');
+            statusText.innerText = "Recording stopped. Click Next.";
+            nextBtn.disabled = false;
+            
+            if (recognition) {
+                recognition.stop();
+            }
+
+            // Save the result for current index
+            userResponses[currentIndex] = {
+                expected: exercises[currentIndex].transcript,
+                said: currentRecognizedText.trim() || "(No speech detected)"
+            };
+        }
+
+        function nextQuestion() {
+            // Stop audio if it's somehow still playing
+            audioPlayer.pause();
+            if(isRecording) stopRecording();
+
+            currentIndex++;
+            if (currentIndex < exercises.length) {
+                loadQuestion();
+            } else {
+                showEndScreen();
+            }
+        }
+
+        function cleanString(str) {
+            return str.toLowerCase().replace(/[.,?!]/g, '').trim();
+        }
+
+        function showEndScreen() {
+            quizScreen.style.display = 'none';
+            endScreen.style.display = 'flex';
+
+            const resultsList = document.getElementById('results-list');
+            
+            userResponses.forEach((res, index) => {
+                const li = document.createElement('li');
+                
+                const expectedClean = cleanString(res.expected);
+                const saidClean = cleanString(res.said);
+                
+                // Simple matching logic for visual feedback
+                let isMatch = false;
+                if(saidClean.length > 0 && expectedClean.includes(saidClean) || saidClean.includes(expectedClean)) {
+                    isMatch = true;
+                }
+
+                const saidClass = isMatch ? 'correct-text' : 'incorrect-text';
+
+                li.innerHTML = `
+                    <div style="margin-bottom: 8px;"><strong>Question ${index + 1}</strong></div>
+                    <div style="color: #666; font-size: 14px; margin-bottom: 4px;">
+                        <em>Expected:</em> "${res.expected}"
+                    </div>
+                    <div style="font-size: 15px;">
+                        <em>You said:</em> <span class="${saidClass}">"${res.said}"</span>
+                    </div>
+                `;
+                resultsList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
